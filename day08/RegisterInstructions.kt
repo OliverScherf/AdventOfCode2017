@@ -22,9 +22,6 @@ fun main(args: Array<String>) {
 }
 
 fun partB(lines: Sequence<String>) {
-	if (true) {
-		
-	}
 	var max = 0
 	lines.asIterable()
 			.map { it.split(' ') }
