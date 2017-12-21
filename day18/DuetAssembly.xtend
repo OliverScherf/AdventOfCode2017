@@ -10,7 +10,7 @@ class DuetAssembly {
 	private var pc = 0;
 	private var String[] code;
 	private var Map<Character, Long> registers = new HashMap<Character, Long>();
-	private var lastStackSymbol = 0L
+	private var lastSound = 0L
 
 	def static void main(String[] args) {
 		val input = new String(Files.readAllBytes(Paths.get("input.txt")));
@@ -38,7 +38,7 @@ class DuetAssembly {
 				}
 			}
 		} catch (Exception e) {
-			println(lastStackSymbol)
+			println(lastSound)
 		}
 	}
 
@@ -52,7 +52,7 @@ class DuetAssembly {
 	}
 	
 	def execSnd(String[] inst) {
-		lastStackSymbol = registers.get(inst.get(1).toChar).zeroIfNull
+		lastSound = registers.get(inst.get(1).toChar).zeroIfNull
 		pc++
 	}
 
