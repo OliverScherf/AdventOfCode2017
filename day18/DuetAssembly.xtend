@@ -43,11 +43,7 @@ class DuetAssembly {
 	}
 
 	def execSet(String[] inst) {
-		if (isDigit(inst.get(2))) {
-			registers.put(inst.get(1).toChar, inst.get(2).toLong);
-		} else {
-			registers.put(inst.get(1).toChar, registers.get(inst.get(2).toChar).zeroIfNull);
-		}
+		registers.put(inst.get(1).toChar, value(inst.get(2)))
 		pc++
 	}
 	
@@ -57,75 +53,51 @@ class DuetAssembly {
 	}
 
 	def execMod(String[] inst) {
-		var oldValue = registers.get(inst.get(1).toChar).zeroIfNull
-		if (isDigit(inst.get(2))) {
-			registers.put(inst.get(1).toChar, oldValue % inst.get(2).toLong)
-		} else {
-			var regValue = registers.get(inst.get(2).toChar).zeroIfNull
-			registers.put(inst.get(1).toChar, oldValue % regValue)
-		}
+		var oldValue = value(inst.get(1))
+		registers.put(inst.get(1).toChar, oldValue % value(inst.get(2)))
 		pc++
 	}
 
 	def execRcv(String[] inst) {
-		if (!registers.get(inst.get(1).toChar).zeroIfNull.equals(0)) {
+		if (!value(inst.get(1)).equals(0)) {
 			pc = -1 // stop the program
 		}
 		pc++
 	}
 
 	def execJgz(String[] inst) {
-		try {
-			var oldValue = registers.get(inst.get(1).toChar).zeroIfNull
-			if (Long.compare(oldValue, 0L) > 0) {
-				if (isDigit(inst.get(2))) {
-					pc += inst.get(2).toInt
-				} else {
-					pc += registers.get(inst.get(2).toChar).zeroIfNull.toInt
-				}
-			} else {
-				pc++;
-			}
-		} catch (Exception e) {
-			e.printStackTrace
-			pc = 1000;
+		var oldValue = value(inst.get(1))
+		if (Long.compare(oldValue, 0L) > 0L) {
+			pc += value(inst.get(2)).toInt
+		} else {
+			pc++
 		}
 	}
 
 	def execMul(String[] inst) {
-		var oldValue = registers.get(inst.get(1).toChar).zeroIfNull
-		if (isDigit(inst.get(2))) {
-			registers.put(inst.get(1).toChar, oldValue * inst.get(2).toInt)
-		} else {
-			var regValue = registers.get(inst.get(2).toChar)
-			registers.put(inst.get(1).toChar, oldValue * regValue)
-		}
+		var oldValue = value(inst.get(1))
+		registers.put(inst.get(1).toChar, oldValue * value(inst.get(2)))
 		pc++
 	}
-	
+
 	def execAdd(String[] inst) {
-		var oldValue = registers.get(inst.get(1).toChar).zeroIfNull
-		if (isDigit(inst.get(2))) {
-			registers.put(inst.get(1).toChar, oldValue + inst.get(2).toInt)
-		} else {
-			var regValue = registers.get(inst.get(2).toChar).zeroIfNull
-			registers.put(inst.get(1).toChar, oldValue + regValue)
-		}
+		var oldValue = value(inst.get(1))
+		registers.put(inst.get(1).toChar, oldValue + value(inst.get(2)))
 		pc++
 	}
-	
+
 	def zeroIfNull(Long i) {
-		return if (i === null) 0L else i
+		return if(i === null) 0L else i
 	}
 
 	def toInt(String s) {
 		return Integer.parseInt(s)
 	}
-	
+
 	def toInt(Long l) {
 		return l.intValue
 	}
-	
+
 	def toLong(String s) {
 		return Long.parseLong(s)
 	}
@@ -134,12 +106,20 @@ class DuetAssembly {
 		return s.charAt(0)
 	}
 
+	def value(String s) {
+		if (isDigit(s)) {
+			return Long.parseLong(s)
+		} else {
+			return registers.get(s.toChar).zeroIfNull
+		}
+	}
+
 	def isDigit(String s) {
 		try {
 			s.toLong
-			return true;
+			return true
 		} catch (Exception e) {
-			return false;
+			return false
 		}
 	}
 
