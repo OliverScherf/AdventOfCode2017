@@ -58,6 +58,23 @@ public class NetworkRouting {
 			}
 		}
 	}
+	
+	private void partB() {
+		idx = findStart();
+		int steps = 0;
+		while (true) {
+			char c = next();
+			steps++;
+			if (c == '+') {
+				changeDirection();
+			} else if (Character.isLetter(c)) {
+				result += c;
+			} else if (c == ' ') {
+				System.out.println("Finished, result: " + steps);
+				return;
+			}
+		}
+	}
 
 	private char next() {
 		int changeX = 0;
